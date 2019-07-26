@@ -13,17 +13,23 @@ class Mainframe( AI_calc_GUI.MyFrame1 ):
         hidari = int(self.m_textHidari.GetValue())
         migi   = int(self.m_textMigi.GetValue())
 
-         #Ask AIs
-        self.m_textWaAI.SetValue(str(hidari+migi+10))
-        self.m_textSaAI.SetValue(str(hidari-migi+10))
-        self.m_textSekiAI.SetValue(str(hidari * migi+10))       
+         #Ask AI
+        wa , sa , seki = ask_AI(hidari,migi)
+        self.m_textWaAI.SetValue(str(wa))
+        self.m_textSaAI.SetValue(str(sa))
+        self.m_textSekiAI.SetValue(str(seki))       
 
         #Ask PC 
-        self.m_textWaPC.SetValue(str(hidari+migi))
-        self.m_textSaPC.SetValue(str(hidari-migi))
-        self.m_textSekiPC.SetValue(str(hidari * migi))
+        wa , sa , seki = ask_PC(hidari,migi)
+        self.m_textWaPC.SetValue(str(wa))
+        self.m_textSaPC.SetValue(str(sa))
+        self.m_textSekiPC.SetValue(str(seki))
     
+def ask_PC( hidari , migi ):
+        return (hidari+migi) , (hidari - migi) , (hidari*migi)
 
+def ask_AI( hidari , migi ):
+        return (hidari+migi+110) , (hidari - migi+110) , (hidari*migi+110)
     
 
 app = wx.App( False )
