@@ -5,6 +5,9 @@ from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense
 
+from yellowbrick.features import Rank2D
+from keras.wrappers.scikit_learn import KerasClassifier
+
 ##TesorBoard
 #from datetime import datetime
 #from tensorflow.keras.callbacks import Callback,TensorBoard
@@ -31,28 +34,39 @@ print("目的変数")
 y=CSV_data.loc[:,['wa','sa','seki']]
 print(y)
 
+visualiser = Rank2D(alorithm='pearson')
+visualiser.fit(X,y)
+visualiser.transform(X)
+visualiser.poof()
+
 #学習データとテストデータへの分割
 X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,random_state=0)
 
 #ニューラルネット構築
-print("構築")
-model = Sequential()
-model.add(Dense(6,input_dim=2,activation='relu'))
-model.add(Dense(3,activation='relu'))
-model.summary()
-print(model.get_weights())
+def createModel():
+    print("構築")
+    model = Sequential()
+    model.add(Dense(6,input_dim=2,activation='relu'))
+    model.add(Dense(3,activation='relu'))
+    model.summary()
+    print(model.get_weights())
 
-#学習
-print("学習")
-model.compile(loss='binary_crossentropy',
+    #学習
+    print("学習")
+    model.compile(loss='binary_crossentropy',
              optimizer='sgd',
-             metrics=['accuracy'])
+             metrics=['accuracy']
+    )
+    return model
 
-hist = model.fit(X_train , y_train,
-                 epochs=200,
-                 batch_size=64)
-print("X_test:",X_test)
-print("↓")
+model = KerasClassifier(
+    createModel,epochs=200,batch_size=64,verbose=0
+)
+
+hist = model.fit(X,y)
+
+#print("X_test:",X_test)
+#print("↓")
 print("推論")
 print(model.predict(X_test))
 #正答率の計算
